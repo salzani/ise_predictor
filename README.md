@@ -15,6 +15,13 @@ A crescente demanda por práticas sustentáveis na indústria exige ferramentas 
 
 A interface apresenta dois módulos principais: um chatbot automatizado (ESG Assistant) baseado no modelo Gemma-2b-it, treinado para responder sobre o ISE B3, e o painel ISE Predictor, onde o usuário insere dados ambientais para a predição.
 
+## Como executar
+1. **Crie um ambiente virtual** com **Python 3.10** ou superior
+2. Instale as dependências com: pip install -r requirements.txt
+3. Baixe a adaptação do Gemma-2b-it: drive.google.com/file/d/14RgLawGHpdc__gd6FflabyYliKT7Uzf-/view?usp=sharing
+4. Atualize o caminho do modelo no arquivo 'main.py' configurando o path corretamente
+5. Execute com: python3 main.py
+   
 ## Autores
 
 * **[Pedro Henrique Rodrigues Salzani]** - *Desenvolvimento e Pesquisa* - [pedro.salzani789@al.unieduk.com.br]
