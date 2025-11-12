@@ -1,5 +1,4 @@
 pandas
-numpy
 scikit-learn
 PyQt6
 matplotlib
