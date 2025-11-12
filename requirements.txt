@@ -6,3 +6,6 @@ matplotlib
 xgboost
 Transformers
 torch
+accelerate
+bitsandbytes
+langchain-core
