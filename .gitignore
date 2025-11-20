@@ -1,3 +1,4 @@
 app/app_ui.py
 app/integrated_ui_bkp.py
 models/gemma-2b-FT
+__pycache__/

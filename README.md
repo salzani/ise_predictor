@@ -4,7 +4,11 @@
   <img src="https://imgs.search.brave.com/XU4Rf3lQ539bAO2R6zdD7J0aLWcr4cDRKklBQ4Iweb8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91bmlm/YWouZ3J1cG91bmll/ZHVrLmNvbS5ici93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNC8x/MC9VbmlGQUotTG9n/by1Bc3MtSG9yaXpv/bnRhbC0xLnN2Zw" alt="Logo UNIFAJ" width="300">
 </p>
 
-Projeto desenvolvido na **Universidade de Jaguariúna (UNIFAJ)**. O objetivo deste trabalho é desenvolver uma plataforma de software capaz de prever o **Índice de Sustentabilidade** de empresas do setor agrícola com base em seus dados de performance **ambientais**.
+Projeto desenvolvido na **Universidade de Jaguariúna (UNIFAJ)**. O objetivo deste trabalho é desenvolver uma plataforma de software capaz de prever o **Índice de Sustentabilidade** de empresas com base em seus dados de performance **ambientais**.
+
+## Metodologia
+Para visualizar toda a metodologia e técnicas utilizadas, por favor [consulte o artigo completo.](article/ESG-Predict.pdf)
+
 
 ## Contexto
 
@@ -13,7 +17,9 @@ A crescente demanda por práticas sustentáveis na indústria exige ferramentas 
 ## Funcionalidade
 ![ui](data/aux/updated_ise_ux.png)
 
-A interface apresenta dois módulos principais: um chatbot automatizado (ESG Assistant) baseado no modelo Gemma-2b-it, treinado para responder sobre o ISE B3, e o painel ISE Predictor, onde o usuário insere dados ambientais para a predição.
+A interface apresenta dois módulos principais: 
+  - Um chatbot automatizado (ESG Assistant) baseado no modelo Gemma-2b-it, treinado para responder sobre o ISE B3 e assuntos relacionados
+  - Interface para inserir os dados ambientais para predição.
 
 ## Como executar
 1. **Crie um ambiente virtual** com **Python 3.10** ou superior
