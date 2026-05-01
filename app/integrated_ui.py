@@ -71,6 +71,7 @@ class MessageBubble(QWidget):
                 QFrame {
                     background-color: #0066FF;
                     border-radius: 18px;
+                    border-bottom-right-radius: 5px;
                 }
             """)
             label.setStyleSheet("color: white; background: transparent;")
@@ -79,30 +80,29 @@ class MessageBubble(QWidget):
             username_layout.addStretch()
             username_label = QLabel("You")
             username_label.setFont(QFont("Segoe UI", 8))
-            username_label.setStyleSheet("color: #666666; background: transparent;")
+            username_label.setStyleSheet("color: #94A3B8; background: transparent;")
             username_layout.addWidget(username_label)
             username_layout.setContentsMargins(0, 0, 10, 0)
-            
+
             main_layout.addLayout(bubble_layout)
             main_layout.addLayout(username_layout)
         else:
             bubble_layout.addWidget(bubble_frame)
             bubble_layout.addStretch()
-            
+
             bubble_frame.setStyleSheet("""
                 QFrame {
-                    background-color: white;
+                    background-color: #FFFFFF;
                     border-radius: 18px;
-                    padding: 1px;
                 }
             """)
 
             label.setStyleSheet("color: #1a1a1a; background: transparent;")
- 
+
             username_layout = QHBoxLayout()
             username_label = QLabel("ESG Assistant")
             username_label.setFont(QFont("Segoe UI", 8))
-            username_label.setStyleSheet("color: #666666; background: transparent;")
+            username_label.setStyleSheet("color: #94A3B8; background: transparent;")
             username_layout.addWidget(username_label)
             username_layout.addStretch()
             username_layout.setContentsMargins(10, 0, 0, 0)
@@ -113,6 +113,66 @@ class MessageBubble(QWidget):
         self.setStyleSheet("background: transparent;")
 
 
+class ThinkingBubble(QWidget):
+    """Animated indicator shown while the bot is generating a response."""
+
+    _FRAMES = ["●  ○  ○", "○  ●  ○", "○  ○  ●", "○  ●  ○"]
+
+    def __init__(self):
+        super().__init__()
+        self._frame_index = 0
+        self._timer = QTimer(self)
+        self._timer.timeout.connect(self._next_frame)
+        self.setup_ui()
+
+    def setup_ui(self):
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 4, 0, 4)
+        main_layout.setSpacing(3)
+
+        bubble_layout = QHBoxLayout()
+        bubble_layout.setContentsMargins(0, 0, 0, 0)
+
+        bubble_frame = QFrame()
+        bubble_frame.setStyleSheet("""
+            QFrame {
+                background-color: #FFFFFF;
+                border-radius: 18px;
+            }
+        """)
+
+        bubble_content = QHBoxLayout(bubble_frame)
+        bubble_content.setContentsMargins(18, 13, 18, 13)
+
+        self.dots_label = QLabel(self._FRAMES[0])
+        self.dots_label.setFont(QFont("Segoe UI", 10))
+        self.dots_label.setStyleSheet("color: #94A3B8; background: transparent;")
+        bubble_content.addWidget(self.dots_label)
+
+        bubble_layout.addWidget(bubble_frame)
+        bubble_layout.addStretch()
+
+        username_layout = QHBoxLayout()
+        username_label = QLabel("ESG Assistant")
+        username_label.setFont(QFont("Segoe UI", 8))
+        username_label.setStyleSheet("color: #94A3B8; background: transparent;")
+        username_layout.addWidget(username_label)
+        username_layout.addStretch()
+        username_layout.setContentsMargins(10, 0, 0, 0)
+
+        main_layout.addLayout(bubble_layout)
+        main_layout.addLayout(username_layout)
+        self.setStyleSheet("background: transparent;")
+        self._timer.start(400)
+
+    def _next_frame(self):
+        self._frame_index = (self._frame_index + 1) % len(self._FRAMES)
+        self.dots_label.setText(self._FRAMES[self._frame_index])
+
+    def stop(self):
+        self._timer.stop()
+
+
 class ChatPanel(QWidget):
     """Painel do chatbot integrado."""
     
@@ -120,6 +180,7 @@ class ChatPanel(QWidget):
         super().__init__()
         self.orchestrator = orchestrator
         self.worker = None
+        self.thinking_bubble = None
         self.setup_ui()
     
     def setup_ui(self):
@@ -131,34 +192,62 @@ class ChatPanel(QWidget):
         self.setStyleSheet("background-color: #F5F5F7;")
         
         header_frame = QFrame()
-        header_frame.setFixedHeight(60)
+        header_frame.setFixedHeight(70)
         header_frame.setStyleSheet("""
             QFrame {
                 background-color: #FFFFFF;
-                border-bottom: 1px solid #E8E8E8;
+                border-bottom: 1px solid #E8EEF4;
             }
         """)
 
         header_layout = QHBoxLayout(header_frame)
-        header_layout.setContentsMargins(20, 10, 20, 10)
-        header_layout.setSpacing(10)
+        header_layout.setContentsMargins(16, 0, 16, 0)
+        header_layout.setSpacing(12)
+
+        avatar_frame = QFrame()
+        avatar_frame.setFixedSize(42, 42)
+        avatar_frame.setStyleSheet("""
+            QFrame {
+                background-color: #0066FF;
+                border-radius: 21px;
+                border: none;
+            }
+        """)
+        avatar_layout = QHBoxLayout(avatar_frame)
+        avatar_layout.setContentsMargins(0, 0, 0, 0)
+        avatar_label = QLabel("🌿")
+        avatar_label.setFont(QFont("Noto Color Emoji", 18))
+        avatar_label.setStyleSheet("background: transparent;")
+        avatar_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        avatar_layout.addWidget(avatar_label)
+
+        info_layout = QVBoxLayout()
+        info_layout.setSpacing(1)
+        info_layout.setContentsMargins(0, 0, 0, 0)
 
         name_label = QLabel("ESG Assistant")
-        name_label.setFont(QFont("Segoe UI", 13, QFont.Weight.DemiBold))
+        name_label.setFont(QFont("Segoe UI", 12, QFont.Weight.DemiBold))
         name_label.setStyleSheet("color: #1E293B; background: transparent;")
 
-        status_label = QLabel("● Online")
-        status_label.setFont(QFont("Segoe UI", 10))
-        status_label.setStyleSheet("color: #10B981; background: transparent;")
+        self.status_label = QLabel("● Online")
+        self.status_label.setFont(QFont("Segoe UI", 9))
+        self.status_label.setStyleSheet("color: #10B981; background: transparent;")
 
-        header_layout.addWidget(name_label)
-        header_layout.addWidget(status_label)
+        info_layout.addWidget(name_label)
+        info_layout.addWidget(self.status_label)
+
+        header_layout.addWidget(avatar_frame)
+        header_layout.addLayout(info_layout)
         header_layout.addStretch()
 
         main_layout.addWidget(header_frame)
             
         self.setup_chat_area(main_layout)
         self.setup_input_area(main_layout)
+        QTimer.singleShot(200, lambda: self.add_message(
+            "Hello! I'm your ESG Assistant, specialized in ISE B3 and sustainable investing in Brazil. How can I help you today?",
+            is_user=False
+        ))
     
     def setup_chat_area(self, parent_layout):
         """Configura a área de exibição de mensagens."""
@@ -274,11 +363,15 @@ class ChatPanel(QWidget):
         text = self.input_field.text().strip()
         if not text or self.worker:
             return
-        
+
         self.add_message(text, is_user=True)
         self.input_field.clear()
         self.set_input_enabled(False)
-        
+
+        self.thinking_bubble = ThinkingBubble()
+        self.chat_layout.addWidget(self.thinking_bubble)
+        QTimer.singleShot(50, self.scroll_to_bottom)
+
         self.worker = ChatWorker(self.orchestrator, text)
         self.worker.response_ready.connect(self.handle_response)
         self.worker.finished.connect(self.worker_finished)
@@ -286,6 +379,11 @@ class ChatPanel(QWidget):
     
     def handle_response(self, response):
         """Processa a resposta recebida do chatbot."""
+        if self.thinking_bubble is not None:
+            self.thinking_bubble.stop()
+            self.chat_layout.removeWidget(self.thinking_bubble)
+            self.thinking_bubble.deleteLater()
+            self.thinking_bubble = None
         self.add_message(response, is_user=False)
     
     def worker_finished(self):
@@ -298,6 +396,12 @@ class ChatPanel(QWidget):
         """Habilita ou desabilita a área de entrada."""
         self.input_field.setEnabled(enabled)
         self.send_button.setEnabled(enabled)
+        if enabled:
+            self.status_label.setText("● Online")
+            self.status_label.setStyleSheet("color: #10B981; background: transparent;")
+        else:
+            self.status_label.setText("● Thinking...")
+            self.status_label.setStyleSheet("color: #F59E0B; background: transparent;")
 
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor
 from PyQt6.QtCore import Qt
@@ -424,7 +528,7 @@ class InputWindow(QWidget):
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet("color: #0F172A; background: transparent; border: none;")
 
-        subtitle_label = QLabel("Pedro Henrique Rodrigues Salzani, UNIFAJ")
+        subtitle_label = QLabel("ISE B3 Index Predictor")
         subtitle_label.setFont(QFont("Segoe UI", 12))
         subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         subtitle_label.setStyleSheet("color: #64748B; background: transparent; border: none;")
@@ -881,7 +985,7 @@ class ResultsAndSaveWindow(QWidget):
         results_grid.addWidget(tree_label, 0, 0)
         results_grid.addWidget(self.label_pred_tree, 1, 0)
 
-        mlp_label = QLabel("Multi Layer Perceptron")
+        mlp_label = QLabel("MLP")
         mlp_label.setStyleSheet(label_style)
         self.label_pred_mlp = QLabel("0.00")
         self.label_pred_mlp.setStyleSheet(value_style)
