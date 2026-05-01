@@ -15,7 +15,7 @@ Para visualizar toda a metodologia e técnicas utilizadas, por favor [consulte o
 A crescente demanda por práticas sustentáveis na indústria exige ferramentas mais inteligentes para avaliar e prever o impacto das operações das empresas. Este projeto utiliza técnicas de Machine Learning para analisar métricas ambientais como uso de água, emissões de CO₂, gestão de resíduos e biodiversidade.
 
 ## Funcionalidade
-![ui](data/aux/updated_ise_ux.png)
+![ui](data/aux/updated_ise_ui.png)
 
 A interface apresenta dois módulos principais: 
   - Um chatbot automatizado (ESG Assistant) baseado no modelo Gemma-2b-it, treinado para responder sobre o ISE B3 e assuntos relacionados
